@@ -2,7 +2,7 @@
 
 ## Project Goal
 
-Run the `Qwen3-30B-A3B-Instruct-2507_w8a8_pertoken` Mixture-of-Experts model with vLLM in expert-parallel mode on a server equipped with eight Huawei Ascend 310P accelerators.
+Run the `Qwen3-30B-A3B-Instruct-2507_w8a8_pertoken` Mixture-of-Experts model with vLLM in expert-parallel mode on a server equipped with six Huawei Ascend 310P accelerators.
 
 After establishing a correct and reproducible baseline, optimize the inference stack to reduce end-to-end latency. The initial optimization focus should be vLLM and the Ascend runtime. Model-level changes may be considered later if runtime and communication optimizations are insufficient.
 
@@ -10,11 +10,11 @@ After establishing a correct and reproducible baseline, optimize the inference s
 
 - One NVIDIA RTX A3000 laptop GPU for local development, lightweight experiments, client tooling, and tests with smaller models.
 - One server with two NVIDIA V100 GPUs for intermediate validation of vLLM, MoE behavior, and distributed execution. Performance results from this system are not directly transferable to Ascend because its kernels, quantization support, and communication stack differ.
-- One server with eight Huawei Ascend 310P accelerators. This is the target deployment and benchmarking platform.
+- One server with six Huawei Ascend 310P accelerators, a Kunpeng 920 CPU, and 1 TB of system memory. This is the target deployment and benchmarking platform.
 
 ## Intended Parallelism
 
-The primary distributed execution strategy is expert parallelism. MoE experts should be distributed across the eight Ascend devices, while routed tokens are exchanged between devices as required by the model's router.
+The primary distributed execution strategy is expert parallelism. MoE experts should be distributed across the six Ascend devices, while routed tokens are exchanged between devices as required by the model's router.
 
 Tensor parallelism or a hybrid tensor-parallel and expert-parallel configuration may be evaluated if required by memory capacity, runtime limitations, or measured performance.
 
@@ -39,7 +39,7 @@ Before changing vLLM or the model, verify that the target software stack support
 
 - The exact Qwen3 MoE architecture and checkpoint.
 - The exact `w8a8_pertoken` weight and activation quantization format.
-- Eight Ascend 310P devices.
+- Six Ascend 310P devices.
 - Expert parallelism rather than tensor parallelism alone.
 - Required MoE routing, dispatch, combine, and collective communication operations.
 - Compatible versions of vLLM, the Ascend integration, CANN, drivers, firmware, and related libraries.
@@ -50,7 +50,7 @@ Before changing vLLM or the model, verify that the target software stack support
 1. Inventory the target server hardware and installed software.
 2. Identify the exact model artifact, configuration, tokenizer, and quantization metadata.
 3. Establish a minimal correct single-request execution path.
-4. Scale execution to all eight Ascend 310P devices using expert parallelism.
+4. Scale execution to all six Ascend 310P devices using expert parallelism.
 5. Create a reproducible baseline with fixed workloads and configuration.
 6. Profile prefill, decode, MoE routing, communication, kernels, synchronization, and memory use.
 7. Optimize the runtime and serving configuration.
@@ -76,7 +76,7 @@ Model-level techniques must include quality evaluation because they may alter th
 - Reproducible environment and launch instructions.
 - Versioned runtime and model configuration.
 - A fixed benchmark workload and measurement procedure.
-- A working eight-device expert-parallel baseline on Ascend 310P.
+- A working six-device expert-parallel baseline on Ascend 310P.
 - Profiling results identifying the dominant latency bottlenecks.
 - Documented optimizations with before-and-after measurements.
 - A final comparison covering TTFT, TPOT, end-to-end latency, throughput, memory use, and quality impact.

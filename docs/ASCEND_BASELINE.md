@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The first project milestone is to establish the exact hardware and software configuration of the target eight-device Ascend 310P server. Version selection and deployment decisions must be based on this inventory rather than assumptions.
+The first project milestone is to establish the exact hardware and software configuration of the target six-device Ascend 310P server. Version selection and deployment decisions must be based on this inventory rather than assumptions.
 
 ## Collect the Inventory
 
@@ -15,6 +15,22 @@ bash scripts/collect_ascend_inventory.sh | tee ascend-inventory.txt
 The script performs read-only checks. It does not install packages, start services, or change system configuration.
 
 Review the output before sharing it. In particular, check whether environment variables or network interface data contain information that should remain private.
+
+## Validate the Container and Model
+
+Run the focused runtime validation inside the target container:
+
+```bash
+bash scripts/validate_target_environment.sh
+```
+
+If the model is already available inside the container, pass its local path:
+
+```bash
+bash scripts/validate_target_environment.sh /path/to/model
+```
+
+The script validates Python package imports, torch-npu device visibility, the vLLM Ascend build target when available, and the model's configuration and quantization metadata.
 
 ## Required Model Information
 
@@ -35,7 +51,7 @@ Do not add model weights, credentials, access tokens, or private registry URLs t
 
 The initial baseline is complete when all of the following are true:
 
-- All eight Ascend 310P devices are visible and healthy.
+- All six Ascend 310P devices are visible and healthy.
 - Driver, firmware, CANN, Python, PyTorch, and torch-npu versions are recorded.
 - A compatible vLLM and Ascend integration combination is selected and pinned.
 - The exact model artifact and quantization format are identified.
@@ -47,4 +63,3 @@ The initial baseline is complete when all of the following are true:
 ## Next Decision
 
 After collecting the inventory, determine whether the existing server environment can support the model directly or whether a pinned container image or a separate Python environment is required. Do not upgrade the server stack before completing this compatibility assessment.
-
