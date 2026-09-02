@@ -32,6 +32,25 @@ bash scripts/validate_target_environment.sh /path/to/model
 
 The script validates Python package imports, torch-npu device visibility, the vLLM Ascend build target when available, and the model's configuration and quantization metadata.
 
+## Run the Initial TP2 Smoke Test
+
+Run the first conservative model-load test on two Ascend 310P devices:
+
+```bash
+bash scripts/run_qwen3_tp2_smoke.sh /path/to/model
+```
+
+The script uses devices `0,1`, binds the API server to `127.0.0.1:8000`, and writes `qwen3-tp2-startup.log`. These settings can be overridden without editing the script:
+
+```bash
+ASCEND_DEVICES=2,3 \
+VLLM_PORT=8001 \
+STARTUP_LOG=qwen3-tp2-devices-2-3.log \
+bash scripts/run_qwen3_tp2_smoke.sh /path/to/model
+```
+
+This smoke test validates model loading, TP2 execution, and Ascend W8A8 support. Expert parallelism is intentionally deferred until the basic execution path succeeds.
+
 ## Required Model Information
 
 Record the following information separately for the exact checkpoint:
