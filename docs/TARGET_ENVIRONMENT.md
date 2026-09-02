@@ -56,12 +56,15 @@ Validation status reported on 2026-09-01:
 
 Remaining gates:
 
-1. Verify that vLLM recognizes the model architecture and `w8a8_dynamic` quantization method.
-2. Load the model on one device if memory permits; otherwise perform the first load with tensor parallelism across multiple devices.
-3. Run a deterministic generation without expert parallelism to isolate basic model and quantization support.
-4. Enable expert parallelism with the same workload and confirm it from runtime logs.
-5. Determine whether the six-rank EP implementation supports uneven placement of 128 routed experts.
-6. Compare output correctness, device memory, TTFT, and TPOT between the runs.
+The model successfully starts and passes AISBench tests with TP1, `--enable-expert-parallel`, Ascend quantization, FP32, eager execution, a maximum model length of 3096, and eight maximum sequences.
+
+Remaining gates:
+
+1. Preserve the successful TP1 command as the reference baseline.
+2. Confirm how many worker processes and NPUs the TP1 run actually uses.
+3. Establish a true multi-rank expert-parallel run and confirm it from runtime logs and device utilization.
+4. Determine whether the six-rank EP implementation supports uneven placement of 128 routed experts.
+5. Compare output correctness, device memory, TTFT, and TPOT between the runs.
 
 ## Parallelism Constraint
 

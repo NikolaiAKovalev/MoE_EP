@@ -32,24 +32,24 @@ bash scripts/validate_target_environment.sh /path/to/model
 
 The script validates Python package imports, torch-npu device visibility, the vLLM Ascend build target when available, and the model's configuration and quantization metadata.
 
-## Run the Initial TP2 Smoke Test
+## Reproduce the Known-Working Baseline
 
-Run the first conservative model-load test on two Ascend 310P devices:
-
-```bash
-bash scripts/run_qwen3_tp2_smoke.sh /path/to/model
-```
-
-The script uses devices `0,1`, binds the API server to `127.0.0.1:8000`, and writes `qwen3-tp2-startup.log`. These settings can be overridden without editing the script:
+The following script reproduces the configuration that successfully served the model and passed AISBench tests on the target server:
 
 ```bash
-ASCEND_DEVICES=2,3 \
-VLLM_PORT=8001 \
-STARTUP_LOG=qwen3-tp2-devices-2-3.log \
-bash scripts/run_qwen3_tp2_smoke.sh /path/to/model
+bash scripts/run_qwen3_working_baseline.sh /path/to/model
 ```
 
-This smoke test validates model loading, TP2 execution, and Ascend W8A8 support. Expert parallelism is intentionally deferred until the basic execution path succeeds.
+By default, the script does not change device visibility. A physical device selection can be supplied explicitly:
+
+```bash
+ASCEND_DEVICES=2 \
+bash scripts/run_qwen3_working_baseline.sh /path/to/model
+```
+
+The observed working configuration uses TP1, dynamic W8A8, FP32, eager execution, a maximum model length of 3096, and at most eight active sequences. It has passed AISBench tests.
+
+The `--enable-expert-parallel` flag alone does not prove that experts are distributed across multiple NPUs. With TP1 and DP1, the model normally has a distributed world size of one. Runtime logs or process/device utilization must demonstrate multiple ranks before this run can be classified as an expert-parallel deployment.
 
 ## Required Model Information
 
