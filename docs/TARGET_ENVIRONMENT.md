@@ -54,17 +54,16 @@ Validation status reported on 2026-09-01:
 - Checkpoint quantization mode: `w8a8_dynamic`.
 - Device names: not yet recorded; they are not required before the initial model load.
 
-Remaining gates:
-
-The model was reported to pass AISBench tests with TP1, `--enable-expert-parallel`, Ascend quantization, eager execution, a maximum model length of 3096, and eight maximum sequences. A subsequent scripted launch reported that the Ascend quantization method rejects FP32 and supports INT8, FP16, and BF16. The repository baseline therefore uses FP16; the dtype discrepancy must be resolved from the exact successful command or startup log.
+The model passed AISBench tests with TP1, `--enable-expert-parallel`, Ascend quantization, eager execution, a maximum model length of 3096, and eight maximum sequences. The Ascend quantization method rejects FP32 and supports INT8, FP16, and BF16. On 2026-09-02, the minimal repository baseline started successfully with FP16 on Ascend 310P.
 
 Remaining gates:
 
-1. Confirm the dtype used by the successful AISBench baseline.
-2. Confirm how many worker processes and NPUs the TP1 run actually uses.
-3. Establish a true multi-rank expert-parallel run and confirm it from runtime logs and device utilization.
-4. Determine whether the six-rank EP implementation supports uneven placement of 128 routed experts.
-5. Compare output correctness, device memory, TTFT, and TPOT between the runs.
+1. Send a deterministic API request and save the response as functional evidence.
+2. Record baseline TTFT, TPOT, end-to-end latency, and peak NPU memory.
+3. Confirm how many worker processes and NPUs the TP1 run actually uses.
+4. Establish a true multi-rank expert-parallel run and confirm it from runtime logs and device utilization.
+5. Determine whether the six-rank EP implementation supports uneven placement of 128 routed experts.
+6. Compare output correctness, device memory, TTFT, and TPOT between the runs.
 
 ## Parallelism Constraint
 
