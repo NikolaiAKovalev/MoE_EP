@@ -1,4 +1,4 @@
 # Local hardware and environment inventory reports may contain private data.
 ascend-inventory*.txt
 qwen3-*-startup.log
-qwen3-working-baseline.log
+qwen3-baseline.log

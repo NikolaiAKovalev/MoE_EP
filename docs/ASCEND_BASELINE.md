@@ -32,22 +32,26 @@ bash scripts/validate_target_environment.sh /path/to/model
 
 The script validates Python package imports, torch-npu device visibility, the vLLM Ascend build target when available, and the model's configuration and quantization metadata.
 
-## Reproduce the Known-Working Baseline
+## Run the Minimal Baseline
 
-The following script reproduces the configuration that successfully served the model and passed AISBench tests on the target server:
-
-```bash
-bash scripts/run_qwen3_working_baseline.sh /path/to/model
-```
-
-By default, the script does not change device visibility. A physical device selection can be supplied explicitly:
+The baseline script intentionally contains only the model command and one device-selection variable:
 
 ```bash
-ASCEND_DEVICES=2 \
-bash scripts/run_qwen3_working_baseline.sh /path/to/model
+bash scripts/run_qwen3_baseline.sh /path/to/model
 ```
 
-The observed working configuration uses TP1, dynamic W8A8, FP32, eager execution, a maximum model length of 3096, and at most eight active sequences. It has passed AISBench tests.
+It uses physical device 0 by default. Select another device through the native Ascend environment variable:
+
+```bash
+ASCEND_RT_VISIBLE_DEVICES=2 \
+bash scripts/run_qwen3_baseline.sh /path/to/model
+```
+
+The Ascend quantization loader rejects FP32 and supports INT8, FP16, and BF16. The minimal baseline therefore uses FP16. Capture logs externally when needed:
+
+```bash
+bash scripts/run_qwen3_baseline.sh /path/to/model 2>&1 | tee qwen3-baseline.log
+```
 
 The `--enable-expert-parallel` flag alone does not prove that experts are distributed across multiple NPUs. With TP1 and DP1, the model normally has a distributed world size of one. Runtime logs or process/device utilization must demonstrate multiple ranks before this run can be classified as an expert-parallel deployment.
 

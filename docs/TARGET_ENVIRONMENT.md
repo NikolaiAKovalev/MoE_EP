@@ -56,11 +56,11 @@ Validation status reported on 2026-09-01:
 
 Remaining gates:
 
-The model successfully starts and passes AISBench tests with TP1, `--enable-expert-parallel`, Ascend quantization, FP32, eager execution, a maximum model length of 3096, and eight maximum sequences.
+The model was reported to pass AISBench tests with TP1, `--enable-expert-parallel`, Ascend quantization, eager execution, a maximum model length of 3096, and eight maximum sequences. A subsequent scripted launch reported that the Ascend quantization method rejects FP32 and supports INT8, FP16, and BF16. The repository baseline therefore uses FP16; the dtype discrepancy must be resolved from the exact successful command or startup log.
 
 Remaining gates:
 
-1. Preserve the successful TP1 command as the reference baseline.
+1. Confirm the dtype used by the successful AISBench baseline.
 2. Confirm how many worker processes and NPUs the TP1 run actually uses.
 3. Establish a true multi-rank expert-parallel run and confirm it from runtime logs and device utilization.
 4. Determine whether the six-rank EP implementation supports uneven placement of 128 routed experts.
