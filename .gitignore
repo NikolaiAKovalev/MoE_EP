@@ -2,4 +2,5 @@
 ascend-inventory*.txt
 qwen3-*-startup.log
 qwen3-baseline.log
+qwen3-ep2.log
 baseline-*.json
