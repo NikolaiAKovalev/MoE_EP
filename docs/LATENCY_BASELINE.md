@@ -9,13 +9,17 @@ Record a reproducible single-request latency baseline before changing parallelis
 Start the model server, then run from the server container or any client with network access to the endpoint:
 
 ```bash
-python3 scripts/benchmark_latency.py \
-    --url http://127.0.0.1:3057/v1/chat/completions \
-    --model Qwen3 \
-    --warmup 2 \
-    --requests 10 \
-    --max-tokens 128 \
-    --output baseline-tp1-fp16.json
+bash scripts/run_latency_baseline.sh
+```
+
+The wrapper uses the documented baseline parameters. Override them through environment variables when running a separate experiment:
+
+```bash
+BENCHMARK_URL=http://127.0.0.1:3057/v1/chat/completions \
+MEASURED_REQUESTS=20 \
+MAX_OUTPUT_TOKENS=256 \
+BENCHMARK_OUTPUT=baseline-tp1-fp16-256.json \
+bash scripts/run_latency_baseline.sh
 ```
 
 The script uses streaming responses and reports:
@@ -36,4 +40,3 @@ The benchmark is sequential and has concurrency 1. Warm-up requests are not incl
 - Do not compare the first cold request with warmed-up requests.
 - Record server logs, NPU memory use, and NPU utilization alongside the latency report.
 - Use a new output filename for every configuration.
-
